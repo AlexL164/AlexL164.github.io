@@ -1,0 +1,76 @@
+html, body {
+    margin: 0;
+    height: 100%;
+}
+
+#app {
+    max-width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    line-height: 1.4;
+    font-family: "Avenir", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: blue;
+  }
+  
+.instrlist{
+    width: 260px; /* Set the width of the sidebar - or:max-with */
+    padding-left: 0;
+}
+
+.instrIcon{
+    padding-right: 5px;
+}
+.instrTrashIcon{
+    position: absolute;
+    right: 5px;
+    cursor: pointer;
+}
+
+.instrDragIcon{
+    cursor: move;
+}
+
+.row {
+    height: 100%;
+}
+
+.underTopBar {
+    height: 100%;
+    position: absolute;
+    left: 0px;
+}
+
+.toolButton {
+    margin-top: 10px;
+    width: 60px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+
+} 
+
+
+[draggable] {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* Required to make elements draggable in old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+  }
+  
+  .instrItems {
+
+  }
+
+  .instrItems.dragged {
+    /* -border: 2px dashed #000; */
+    border: 2px dashed blue;
+    opacity: 0.4;
+  }
+  
+  

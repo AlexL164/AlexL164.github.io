@@ -1,0 +1,23 @@
+.instrlist{
+    max-width: 260px; /* Set the width of the sidebar */
+}
+
+.row {
+    height: 100%;
+}
+
+.underTopBar {
+    height: 100%;
+    position: absolute;
+    left: 0px;
+}
+
+.toolButton {
+    margin-top: 10px;
+    width: 60px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+
+} 
