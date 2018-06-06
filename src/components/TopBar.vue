@@ -1,7 +1,7 @@
 <!-- src/components/HelloDecorator.vue -->
 <!-- This is an alternative way to define the Hello component using decorators -->
 <template>
-            <nav class="navbar navbar-expand navbar-light bg-light">
+<nav class="navbar navbar-expand navbar-light bg-light">
   <a class="navbar-brand" href="#">Vertaktor</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>

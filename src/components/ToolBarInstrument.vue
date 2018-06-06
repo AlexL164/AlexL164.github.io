@@ -1,5 +1,5 @@
 <template>
-<div class="container bg-light">
+<div>
   
     <a href="#" @click="toggleInstrumentState" class="btn btn-outline-secondary btn-lg toolButton" role="button" aria-pressed="true">
      <span class="fa-layers fa-fw">

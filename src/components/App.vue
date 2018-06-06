@@ -1,14 +1,12 @@
 <template>
-	<div id="app">
+	<div class="container-fleks-NavAndContent" id="app">
 		<TopBar/>
-		<div class="container underTopBar">
-  		<div class="row">
-			<ToolBarMeasure class="col-12 col-md-auto" v-if="getState == 0"/>
-			<ToolBarInstrument class="col-12 col-md-auto" v-if="getState == 1 | getState == 2"/>
-			<InstrumentList class="col-12 col-md-auto" v-if="getState == 2"/>
-   	 		<div class="col">  <!--hier openseadragon--> </div>
+		<div class="container-fleks-UnderNavContent">
+			  <ToolBarMeasure class="bg-light toolbar" v-if="getState == 0"/>
+			  <ToolBarInstrument class="bg-light toolbar" v-if="getState == 1 | getState == 2"/>
+			  <InstrumentList v-if="getState == 2"/>
+   	 		<div id="openSeadragonContainer">  <!--hier openseadragon--> </div>
   		</div>
-		</div>
 	</div>
 </template>
 

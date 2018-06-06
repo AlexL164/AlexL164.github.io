@@ -1,5 +1,5 @@
 <template>
-<div class="container bg-light">
+<div>
   
     <div class="btn-group-vertical toolButton" role="group" aria-label="Basic example">
     <a href="#" class="btn btn-outline-secondary btn-lg" role="button" aria-pressed="true"><i class="fas fa-th-large"></i></a>

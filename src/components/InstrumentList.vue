@@ -110,6 +110,7 @@ handleDragEnd(e:DragEvent) {
 }
 
 handleTouchStart(e1:Event) {
+  e1.preventDefault();
   let e = <TouchEvent>e1;
   let candidateForSourceListItem = (<Node>e.currentTarget).parentNode;
   if(e.currentTarget!= null && candidateForSourceListItem != null && (<HTMLElement>e.currentTarget).classList.contains("instrDragIcon"))
@@ -120,17 +121,20 @@ handleTouchStart(e1:Event) {
     }
 
 handleTouchEnd(e1:Event) {
+  e1.preventDefault();
   let e = <TouchEvent>e1;
   console.log("end tch");
   this.dragFinished(<HTMLElement>e.target);
     }
 
 handleTouchLeave(e1:Event) {
+  e1.preventDefault();
   let e = <TouchEvent>e1;
   console.log("leave tch");
     }
 
 handleTouchMove(e1:Event) {
+  e1.preventDefault();
   // get list element:
   let e = <TouchEvent>e1;
   let currentTar:any = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
