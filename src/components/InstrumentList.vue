@@ -1,23 +1,22 @@
 <template>
 <div class="container bg-light instrlist">
+  <a @click="appendElement('new Instrument')" class="btn btn-outline-secondary btn-sm text-secondary toolButton">+</a>
 <ul id="draggableItems" class="list-group">
   <li @dragover.stop="handleDragOver" @dragleave="handleDragLeave" @touchleave="handleTouchLeave" @dragenter="handleDragEnter" 
-  v-for="(currentInstrument,index) in instruments" :key="currentInstrument.id"
+  v-for="(currentInstrument,index) in instruments" :key="currentInstrument.id" 
   v-bind:data-instrumentid="currentInstrument.id" 
-  v-bind:style="{ background: makeTechnicolor(index)}"
   class="instrItems list-group-item list-group-item-secondary">
     <span class="instrIcon instrDragIcon"
   @dragstart="handleDragStart" @dragend="handleDragEnd" @touchstart="handleTouchStart" @touchend="handleTouchEnd" @touchmove="handleTouchMove" draggable="true" >
       <i class="fas fa-bars"></i>
     </span>
-    <span>{{currentInstrument.instrumentName}}</span>
+  <i v-bind:style="{ color: makeTechnicolor(index)}" class="fas fa-circle"></i>
+    <span @dblclick="makeEditable" @focusout="makeUneditable">{{currentInstrument.instrumentName}}</span>
     <span class="instrIcon instrTrashIcon" @click="deleteInstrumentAtIndex(index)">
       <i class="fas fa-trash-alt"></i>
     </span>
     </li>
 </ul>
-  <a @click="appendElement('new Instrument')" class="btn btn-outline-secondary btn-lg text-secondary toolButton">+</a>
-  <a class="btn btn-outline-secondary btn-lg text-secondary toolButton">-</a>
         <pre>
           {{this.$data.dragSrcElId}}
   {{instruments}}
@@ -31,6 +30,8 @@
     - markiert
     - Was passiert, wenn Ids nicht numerisch sind?
     - Was passiert, wenn jemand was externes droppt?
+    - Error, wenn jemand listenelemenet markiert und draggt
+    - Farbvergabe funktioniert nur zufällig
     */
 
 
@@ -210,6 +211,19 @@ export default class InstrumentListDecorator extends Vue {
     });
   }
 
+  makeEditable(e:Event)
+  {
+    (<HTMLElement>e.target).contentEditable = "true";
+  }
+
+  makeUneditable(e:Event)
+  {
+    (<HTMLElement>e.target).contentEditable = "false";
+  }
+
+
+  // works and I don't know why
+  // vue seems not to rerender icon 
   makeTechnicolor(n:number) {
     var nElements = this.$data.instruments.length;
     var colorDistance = 255.0 / nElements;
