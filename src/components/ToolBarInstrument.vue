@@ -9,6 +9,8 @@
     </a> 
 <br>
     <a href="#" class="btn btn-outline-secondary btn-lg toolButton" role="button" aria-pressed="true"><i class="fas fa-cut"></i></a> 
+<br>
+    <a href="#" class="btn btn-outline-secondary btn-lg toolButton" role="button" aria-pressed="true"><i class="fas fa-eraser"></i></a>
 </div>
 </template>
 

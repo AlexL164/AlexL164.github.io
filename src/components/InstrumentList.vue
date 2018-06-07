@@ -1,6 +1,6 @@
 <template>
 <div class="container bg-light instrlist">
-  <a @click="appendElement('new Instrument')" class="btn btn-outline-secondary btn-sm text-secondary toolButton">+</a>
+  <a @click="appendElement('',true)" class="btn btn-outline-secondary btn-sm text-secondary toolButton">+</a>
 <ul id="draggableItems" class="list-group">
   <li @dragover.stop="handleDragOver" @dragleave="handleDragLeave" @touchleave="handleTouchLeave" @dragenter="handleDragEnter" 
   v-for="(currentInstrument,index) in instruments" :key="currentInstrument.id" 
@@ -25,15 +25,16 @@
 </template>
 
 <script lang="ts">
-
 /* TODO
     - markiert
     - Was passiert, wenn Ids nicht numerisch sind?
     - Was passiert, wenn jemand was externes droppt?
     - Error, wenn jemand listenelemenet markiert und draggt
     - Farbvergabe funktioniert nur zufällig
+    - Auswahl markieren!
+    - Instrumentenliste speichern und übergeben
+    - Button umschalten
     */
-
 
 import { Vue, Component, Prop } from "vue-property-decorator";
 
@@ -52,7 +53,7 @@ export default class InstrumentListDecorator extends Vue {
         { id: 3, instrumentName: "toot toot" },
         { id: 4, instrumentName: "elektronische nasenflöte" }
       ]
-    }
+    };
   }
   mounted() {
     this.$data.draggingInAction = false;
@@ -63,14 +64,22 @@ export default class InstrumentListDecorator extends Vue {
   }
 
   // one larger then the current largest. nothing more needed yet, because the id is for internal communication only
-  appendElement(newName: string) {
-    let largestId = 0;
-    this.$data.instruments.forEach(function(element:any) {
-          // größte Id suchen
-          largestId = element.id >largestId ? element.id : largestId;
-        });
-    let newId = largestId + 1;
-    this.$data.instruments.push({id: newId,instrumentName: newName});
+  appendElement(newName: string, askForName: boolean) {
+    if (askForName)
+      newName = prompt("Please enter the name for the new instrument:")!;
+    if (newName != null) {
+      if(newName == "")
+      {
+        newName = "instrument"
+      }
+      let largestId = 0;
+      this.$data.instruments.forEach(function(element: any) {
+        // größte Id suchen
+        largestId = element.id > largestId ? element.id : largestId;
+      });
+      let newId = largestId + 1;
+      this.$data.instruments.push({ id: newId, instrumentName: newName });
+    }
   }
 
   deleteInstrumentAtIndex(index: number) {
@@ -191,8 +200,8 @@ export default class InstrumentListDecorator extends Vue {
 
   //unschööön, redundant und beide können gleich sein
   switchTwoInstrumentsByIndex(index1: number, index2: number) {
-    var lowerIndex= index1 < index2 ? index1:index2;
-    var higherIndex= index1 > index2 ? index1:index2;
+    var lowerIndex = index1 < index2 ? index1 : index2;
+    var higherIndex = index1 > index2 ? index1 : index2;
 
     var tempEl1 = this.$data.instruments[lowerIndex];
     var tempEl2 = this.$data.instruments[higherIndex];
@@ -211,23 +220,20 @@ export default class InstrumentListDecorator extends Vue {
     });
   }
 
-  makeEditable(e:Event)
-  {
+  makeEditable(e: Event) {
     (<HTMLElement>e.target).contentEditable = "true";
   }
 
-  makeUneditable(e:Event)
-  {
+  makeUneditable(e: Event) {
     (<HTMLElement>e.target).contentEditable = "false";
   }
 
-
   // works and I don't know why
-  // vue seems not to rerender icon 
-  makeTechnicolor(n:number) {
+  // vue seems not to rerender icon
+  makeTechnicolor(n: number) {
     var nElements = this.$data.instruments.length;
     var colorDistance = 255.0 / nElements;
-    var styleCode = ("hsl(" + colorDistance * n + ", 100%, 81%)");
+    var styleCode = "hsl(" + colorDistance * n + ", 100%, 81%)";
     console.log(styleCode);
     return styleCode;
     //return "yellow";
