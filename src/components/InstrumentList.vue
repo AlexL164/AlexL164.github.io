@@ -25,15 +25,15 @@
 </template>
 
 <script lang="ts">
+
 /* TODO
-    - markiert
-    - Was passiert, wenn Ids nicht numerisch sind?
-    - Was passiert, wenn jemand was externes droppt?
-    - Error, wenn jemand listenelemenet markiert und draggt
-    - Farbvergabe funktioniert nur zufällig
-    - Auswahl markieren!
-    - Instrumentenliste speichern und übergeben
-    - Button umschalten
+    - visulize dragged isntrument
+    - clarify ids: type checking (numerical), ..
+    - prevent external dropping
+    - crash/error on dragging selected text in li element
+    - include working color management
+    - save instrumentlist
+    - instrumentlist button
     */
 
 import { Vue, Component, Prop } from "vue-property-decorator";
@@ -51,7 +51,7 @@ export default class InstrumentListDecorator extends Vue {
         { id: 1, instrumentName: "floot" },
         { id: 2, instrumentName: "honk" },
         { id: 3, instrumentName: "toot toot" },
-        { id: 4, instrumentName: "elektronische nasenflöte" }
+        { id: 4, instrumentName: "elektronischer nasenflöter" }
       ]
     };
   }
@@ -74,7 +74,7 @@ export default class InstrumentListDecorator extends Vue {
       }
       let largestId = 0;
       this.$data.instruments.forEach(function(element: any) {
-        // größte Id suchen
+        // search highest id
         largestId = element.id > largestId ? element.id : largestId;
       });
       let newId = largestId + 1;
@@ -198,7 +198,7 @@ export default class InstrumentListDecorator extends Vue {
     }
   }
 
-  //unschööön, redundant und beide können gleich sein
+  // ugly, redundant and not checking if numbers equal
   switchTwoInstrumentsByIndex(index1: number, index2: number) {
     var lowerIndex = index1 < index2 ? index1 : index2;
     var higherIndex = index1 > index2 ? index1 : index2;
@@ -229,14 +229,14 @@ export default class InstrumentListDecorator extends Vue {
   }
 
   // works and I don't know why
-  // vue seems not to rerender icon
+  // (vue seems not to rerender icon?)
   makeTechnicolor(n: number) {
     var nElements = this.$data.instruments.length;
     var colorDistance = 255.0 / nElements;
     var styleCode = "hsl(" + colorDistance * n + ", 100%, 81%)";
     console.log(styleCode);
     return styleCode;
-    //return "yellow";
+    // return "yellow";
   }
 }
 </script>
