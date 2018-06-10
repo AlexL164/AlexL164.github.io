@@ -1,6 +1,6 @@
 <template>
 <li @dragover.stop="handleDragOver" @dragleave="handleDragLeave" @touchleave="handleTouchLeave" @dragenter="handleDragEnter" 
-  class="instrItems list-group-item list-group-item-secondary">
+  class="instrItems list-group-item">
     <span class="instrIcon instrDragIcon"
   @dragstart="handleDragStart" @dragend="handleDragEnd" @touchstart="handleTouchStart" @touchend="handleTouchEnd" @touchmove="handleTouchMove" draggable="true" >
       <i class="fas fa-bars"></i>

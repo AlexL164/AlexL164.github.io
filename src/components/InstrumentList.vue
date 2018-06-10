@@ -1,7 +1,7 @@
 <template>
 <div class="container bg-light instrlist">
   <a @click="appendElement('',true)" class="btn btn-outline-secondary btn-sm text-secondary toolButton">+</a>
-            <transition-group name="list" id="draggableItems" class="list-group"  tag="ul">
+            <transition-group name="flip-list" id="draggableItems" class="list-group"  tag="ul">
         <instrument-list-element 
         v-for="(currentInstrument,index) in instruments" :key="currentInstrument.id" 
         :indexx = "index" :instrLength="instruments.length" 
@@ -79,7 +79,7 @@ export default class InstrumentListDecorator extends Vue {
   }
 
   dragOver(overEl: HTMLElement) {
-    if (!this.dragOverOperationRunning) {
+    if (!this.dragOverOperationRunning && ! overEl.classList.contains("flip-list-move")) {
       this.dragOverOperationRunning = true;
       let idSrc:string = this.dragSrcElId;
       let idDst:string = overEl.dataset.instrumentid!;

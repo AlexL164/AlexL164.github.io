@@ -1,91 +1,97 @@
-html, body {
-    margin: 0;
-    height: 100%;
+html,
+body {
+  margin: 0;
+  height: 100%;
 }
 
-.toolbar{
-    padding: 10px;
+.toolbar {
+  padding: 10px;
 }
-.container-fleks-NavAndContent{
-    display: flex; /* or inline-flex */
-    flex-direction: column;
-}
-
-.container-fleks-UnderNavContent{
-    display: flex; /* or inline-flex */
-    flex-direction: row;
-    flex: 1;
+.container-fleks-NavAndContent {
+  display: flex; /* or inline-flex */
+  flex-direction: column;
 }
 
-#openSeadragonContainer{
-    flex: 1;
+.container-fleks-UnderNavContent {
+  display: flex; /* or inline-flex */
+  flex-direction: row;
+  flex: 1;
+}
+
+#openSeadragonContainer {
+  flex: 1;
 }
 
 #app {
-    max-width: 100%;
-    height: 100%;
-    margin: 0 auto;
-    line-height: 1.4;
-    font-family: "Avenir", Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    color: blue;
-  }
-  
-.instrlist{
-    width: 260px; /* Set the width of the sidebar - or:max-with */
-    padding-left: 0;
+  max-width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  line-height: 1.4;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.instrIcon{
-    padding-right: 5px;
-}
-.instrTrashIcon{
-    position: absolute;
-    right: 5px;
-    cursor: pointer;
+.instrlist {
+  width: 260px; /* Set the width of the sidebar - or:max-with */
+  padding-left: 0;
 }
 
-.instrDragIcon{
-    cursor: move;
+.instrIcon {
+  padding-right: 5px;
+}
+.instrTrashIcon {
+  position: absolute;
+  right: 5px;
+  cursor: pointer;
+}
+
+.instrDragIcon {
+  cursor: move;
 }
 
 .toolButton {
-    width: 60px;
-    margin: 10px;
+  width: 60px;
+  margin: 10px;
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
-
-} 
-
+}
 
 [draggable] {
-    -moz-user-select: none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-    /* Required to make elements draggable in old WebKit */
-    -khtml-user-drag: element;
-    -webkit-user-drag: element;
-  }
-  
-  .instrItems {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* Required to make elements draggable in old WebKit */
+  -khtml-user-drag: element;
+  -webkit-user-drag: element;
+}
 
-  }
+.instrItems {
+}
 
-  .instrItems.dragged {
-    /* -border: 2px dashed #000; */
-    border: 2px dashed blue;
-    opacity: 0.4;
-  }
-  
-  .list-enter-active, .list-leave-active {
-    transition: all 0.3s;
-  }
-  .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  
+.instrItems.dragged {
+  /* -border: 2px dashed #000; */
+  border: 2px dashed blue;
+  opacity: 0.4;
+}
+
+.flip-list-move {
+  transition: transform 0.4s;
+}
+
+.flip-list-enter-active {
+  transition: all 0.3s ease;
+}
+
+.flip-list-leave-active {
+  transition: all 0.1s ease;
+}
+
+.flip-list-enter,   .flip-list-leave-to
+  /* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
+}
