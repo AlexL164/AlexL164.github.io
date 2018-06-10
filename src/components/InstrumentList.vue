@@ -1,31 +1,21 @@
 <template>
 <div class="container bg-light instrlist">
   <a @click="appendElement('',true)" class="btn btn-outline-secondary btn-sm text-secondary toolButton">+</a>
-<ul id="draggableItems" class="list-group">
-  <li @dragover.stop="handleDragOver" @dragleave="handleDragLeave" @touchleave="handleTouchLeave" @dragenter="handleDragEnter" 
-  v-for="(currentInstrument,index) in instruments" :key="currentInstrument.id" 
-  v-bind:data-instrumentid="currentInstrument.id" 
-  class="instrItems list-group-item list-group-item-secondary">
-    <span class="instrIcon instrDragIcon"
-  @dragstart="handleDragStart" @dragend="handleDragEnd" @touchstart="handleTouchStart" @touchend="handleTouchEnd" @touchmove="handleTouchMove" draggable="true" >
-      <i class="fas fa-bars"></i>
-    </span>
-  <i v-bind:style="{ color: makeTechnicolor(index)}" class="fas fa-circle"></i>
-    <span @dblclick="makeEditable" @focusout="makeUneditable">{{currentInstrument.instrumentName}}</span>
-    <span class="instrIcon instrTrashIcon" @click="deleteInstrumentAtIndex(index)">
-      <i class="fas fa-trash-alt"></i>
-    </span>
-    </li>
-</ul>
-        <pre>
-          {{this.$data.dragSrcElId}}
+            <transition-group name="list" id="draggableItems" class="list-group"  tag="ul">
+        <instrument-list-element 
+        v-for="(currentInstrument,index) in instruments" :key="currentInstrument.id" 
+        :indexx = "index" :instrLength="instruments.length" 
+        @draggedElementChanged="draggedElementChanged" @dragOver="dragOver" @deletePressed="deleteInstrumentAtIndex"
+  v-bind:data-instrumentid="currentInstrument.id" >{{currentInstrument.instrumentName}}</instrument-list-element>
+            </transition-group>
+          <pre>
+          {{this.dragSrcElId}}
   {{instruments}}
         </pre>
 </div>
 </template>
 
 <script lang="ts">
-
 /* TODO
     - visulize dragged isntrument
     - clarify ids: type checking (numerical), ..
@@ -34,33 +24,32 @@
     - include working color management
     - save instrumentlist
     - instrumentlist button
+    - better septeration of list and items
     */
 
 import { Vue, Component, Prop } from "vue-property-decorator";
+import instrumentListElement from "./instrumentListElement.vue";
+
+Vue.component("instrument-list-element", instrumentListElement);
 
 @Component
 export default class InstrumentListDecorator extends Vue {
-  data() {
-    return {
-      dragSrcElId: null,
-      dragOverOperationRunning: null,
+  dragSrcElId: string = "";
+  dragOverOperationRunning: boolean = false;
 
-      // instruments isn't directly manipulatable because on mobile devices so the manipulation have
-      // there exist no "touchenter" (which could fire with the correct instrument-array object element)
-      instruments: [
-        { id: 1, instrumentName: "floot" },
-        { id: 2, instrumentName: "honk" },
-        { id: 3, instrumentName: "toot toot" },
-        { id: 4, instrumentName: "elektronischer nasenflöter" }
-      ]
-    };
-  }
-  mounted() {
-    this.$data.draggingInAction = false;
-  }
+  // instruments isn't directly manipulatable because on mobile devices so the manipulation have
+  // there exist no "touchenter" (which could fire with the correct instrument-array object element)
+  instruments = [
+    { id: 1, instrumentName: "floot" },
+    { id: 2, instrumentName: "honk" },
+    { id: 3, instrumentName: "toot toot" },
+    { id: 4, instrumentName: "elektronischer nasenflöter" }
+  ];
 
-  addElement(position: number, el: object) {
-    this.$data.instruments.splice(position, 0, el);
+  mounted() {}
+
+  addElement(position: number, el: any) {
+    this.instruments.splice(position, 0, el);
   }
 
   // one larger then the current largest. nothing more needed yet, because the id is for internal communication only
@@ -68,133 +57,40 @@ export default class InstrumentListDecorator extends Vue {
     if (askForName)
       newName = prompt("Please enter the name for the new instrument:")!;
     if (newName != null) {
-      if(newName == "")
-      {
-        newName = "instrument"
+      if (newName == "") {
+        newName = "instrument";
       }
       let largestId = 0;
-      this.$data.instruments.forEach(function(element: any) {
+      this.instruments.forEach(function(element: any) {
         // search highest id
         largestId = element.id > largestId ? element.id : largestId;
       });
       let newId = largestId + 1;
-      this.$data.instruments.push({ id: newId, instrumentName: newName });
+      this.instruments.push({ id: newId, instrumentName: newName });
     }
   }
 
   deleteInstrumentAtIndex(index: number) {
-    this.$data.instruments.splice(index, 1);
+    this.instruments.splice(index, 1);
   }
 
-  handleDragStart(e: DragEvent) {
-    let candidateForSourceListItem = (<Node>e.currentTarget).parentNode;
-    if (
-      candidateForSourceListItem != null &&
-      (<HTMLElement>e.currentTarget).classList.contains("instrDragIcon")
-    ) {
-      this.$data.dragSrcElId = (<HTMLElement>candidateForSourceListItem).dataset.instrumentid;
-      console.log("now dragging id" + this.$data.dragSrcElId);
-      e.dataTransfer.setData("text/html", "");
-      this.dragStart();
-    }
+  draggedElementChanged(elId: string) {
+    this.dragSrcElId = elId;
   }
-
-  handleDragOver(e: DragEvent) {
-    if (e.preventDefault) {
-      e.preventDefault(); // Necessary. Allows us to drop.
-    }
-    if (!this.$data.dragOverOperationRunning) {
-      this.$data.dragOverOperationRunning = true;
-      this.dragOver(<HTMLElement>e.currentTarget);
-      this.$data.dragOverOperationRunning = false;
-    }
-    return false;
-  }
-
-  handleDragEnter(e: DragEvent) {
-    // this / e.target is the current hover target.
-  }
-
-  handleDragLeave(e: DragEvent) {
-    this.leave(<HTMLElement>e.target);
-  }
-
-  handleDrop(e: DragEvent) {
-    if (e.stopPropagation) {
-      e.stopPropagation(); // Stops some browsers from redirecting.
-    }
-    this.dragFinished(<HTMLElement>e.target);
-    return false;
-  }
-
-  handleDragEnd(e: DragEvent) {
-    this.dragFinished(<HTMLElement>e.target);
-  }
-
-  handleTouchStart(e1: Event) {
-    e1.preventDefault();
-    let e = <TouchEvent>e1;
-    let candidateForSourceListItem = (<Node>e.currentTarget).parentNode;
-    if (
-      candidateForSourceListItem != null &&
-      (<HTMLElement>e.currentTarget).classList.contains("instrDragIcon")
-    ) {
-      this.$data.dragSrcElId = (<HTMLElement>candidateForSourceListItem).dataset.instrumentid;
-      console.log("now dragging id" + this.$data.dragSrcElId);
-      this.dragStart();
-    }
-  }
-
-  handleTouchEnd(e1: Event) {
-    e1.preventDefault();
-    let e = <TouchEvent>e1;
-    this.dragFinished(<HTMLElement>e.target);
-  }
-
-  handleTouchLeave(e1: Event) {
-    e1.preventDefault();
-    let e = <TouchEvent>e1;
-  }
-
-  handleTouchMove(e1: Event) {
-    e1.preventDefault();
-    // get list element:
-    let e = <TouchEvent>e1;
-    let currentTar: any = document.elementFromPoint(
-      e.touches[0].clientX,
-      e.touches[0].clientY
-    );
-    if (currentTar != null) {
-      console.log(currentTar);
-      if (currentTar.classList.contains("instrItems")) {
-        this.dragOver(currentTar);
-      } else {
-      }
-    } else {
-    }
-  }
-
-  dragStart() {}
 
   dragOver(overEl: HTMLElement) {
-    var idSrc = this.$data.dragSrcElId;
-    var idDst = overEl.dataset.instrumentid;
+    if (!this.dragOverOperationRunning) {
+      this.dragOverOperationRunning = true;
+      let idSrc:string = this.dragSrcElId;
+      let idDst:string = overEl.dataset.instrumentid!;
 
-    if (idSrc != idDst) {
-      let indexSrc = this.idToIndex(idSrc);
-      let indexDst = this.idToIndex(idDst);
-      this.switchTwoInstrumentsByIndex(indexSrc, indexDst);
-    } else {
-    }
-  }
-
-  dragFinished(dropEl: HTMLElement) {}
-
-  leave(leftEl: HTMLElement) {
-    let isJustChildOfActive: boolean = false;
-    if (leftEl.parentElement != null)
-      isJustChildOfActive = leftEl.parentElement.classList.contains("dragged");
-    if (typeof leftEl.classList != "undefined" && isJustChildOfActive) {
+      if (idSrc != idDst) {
+        let indexSrc:number = this.idToIndex(idSrc);
+        let indexDst:number = this.idToIndex(idDst);
+        this.switchTwoInstrumentsByIndex(indexSrc, indexDst);
+      } else {
+      }
+      this.dragOverOperationRunning = false;
     }
   }
 
@@ -203,8 +99,8 @@ export default class InstrumentListDecorator extends Vue {
     var lowerIndex = index1 < index2 ? index1 : index2;
     var higherIndex = index1 > index2 ? index1 : index2;
 
-    var tempEl1 = this.$data.instruments[lowerIndex];
-    var tempEl2 = this.$data.instruments[higherIndex];
+    var tempEl1 = this.instruments[lowerIndex];
+    var tempEl2 = this.instruments[higherIndex];
     if (lowerIndex < higherIndex) {
       this.deleteInstrumentAtIndex(lowerIndex);
       this.deleteInstrumentAtIndex(higherIndex - 1);
@@ -215,28 +111,12 @@ export default class InstrumentListDecorator extends Vue {
   }
 
   idToIndex(id: any) {
-    return this.$data.instruments.findIndex(function(element: any) {
-      return element.id == id;
+    let calcedIndex = -1;
+    this.instruments.forEach(function(element,index) {
+      if(element.id == id) 
+        calcedIndex = index
     });
-  }
-
-  makeEditable(e: Event) {
-    (<HTMLElement>e.target).contentEditable = "true";
-  }
-
-  makeUneditable(e: Event) {
-    (<HTMLElement>e.target).contentEditable = "false";
-  }
-
-  // works and I don't know why
-  // (vue seems not to rerender icon?)
-  makeTechnicolor(n: number) {
-    var nElements = this.$data.instruments.length;
-    var colorDistance = 255.0 / nElements;
-    var styleCode = "hsl(" + colorDistance * n + ", 100%, 81%)";
-    console.log(styleCode);
-    return styleCode;
-    // return "yellow";
+    return calcedIndex;
   }
 }
 </script>
