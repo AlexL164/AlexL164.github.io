@@ -69,7 +69,7 @@ export default class instrumentListElement extends Vue {
       (<HTMLElement>e.currentTarget).classList.contains("instrDragIcon")
     ) {
       this.$emit(
-        "setDraggedElement",
+        "draggedElementChanged",
         <string>(<HTMLElement>candidateForSourceListItem).dataset.instrumentid
       );
     }
@@ -117,7 +117,6 @@ export default class instrumentListElement extends Vue {
     var nElements = this.instrLength;
     var colorDistance = 255.0 / nElements;
     var styleCode = "hsl(" + colorDistance * n + ", 100%, 81%)";
-    console.log(styleCode);
     return styleCode;
     // return "yellow";
   }
