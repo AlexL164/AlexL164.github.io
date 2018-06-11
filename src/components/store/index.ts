@@ -7,6 +7,7 @@ const state = {
   count: 0
 }
 
+// 0 = measure, 1 = instrument without list, 2 = instrument with list
 const mutations = {
   DOMEASURESTATE (state:any) {
     state.count = 0

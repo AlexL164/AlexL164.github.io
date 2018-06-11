@@ -23,7 +23,6 @@
     - crash/error on dragging selected text in li element
     - include working color management
     - save instrumentlist
-    - instrumentlist button
     - better septeration of list and items (crash if drag before set/start?)
     */
 
