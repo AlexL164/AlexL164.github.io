@@ -24,7 +24,7 @@
     - include working color management
     - save instrumentlist
     - instrumentlist button
-    - better septeration of list and items
+    - better septeration of list and items (crash if drag before set/start?)
     */
 
 import { Vue, Component, Prop } from "vue-property-decorator";

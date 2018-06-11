@@ -6,7 +6,7 @@
       <i class="fas fa-bars"></i>
     </span>
   <i v-bind:style="{ color: makeTechnicolor(indexx)}" class="fas fa-circle"></i>
-    <span @dblclick="makeEditable" @focusout="makeUneditable"><slot/></span>
+    <span contentEditable=true> <!-- @click="makeEditable" @focusout="makeUneditable"--><slot/></span>
     <span class="instrIcon instrTrashIcon" @click="$emit('deletePressed',indexx)">
       <i class="fas fa-trash-alt"></i>
     </span>
