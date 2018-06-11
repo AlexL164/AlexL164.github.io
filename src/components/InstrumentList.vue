@@ -1,6 +1,5 @@
 <template>
 <div class="container bg-light instrlist">
-  <a @click="appendElement('',true)" class="btn btn-outline-secondary btn-sm text-secondary toolButton">+</a>
             <transition-group name="flip-list" id="draggableItems" class="list-group"  tag="ul">
         <instrument-list-element 
         v-for="(currentInstrument,index) in instruments" :key="currentInstrument.id" 
@@ -8,6 +7,7 @@
         @draggedElementChanged="draggedElementChanged" @dragOver="dragOver" @deletePressed="deleteInstrumentAtIndex"
   v-bind:data-instrumentid="currentInstrument.id" >{{currentInstrument.instrumentName}}</instrument-list-element>
             </transition-group>
+              <a @click="appendElement('',true)" class="btn btn-outline-secondary btn-sm text-secondary toolButton">+</a>
           <pre>
           {{this.dragSrcElId}}
   {{instruments}}
@@ -56,6 +56,7 @@ export default class InstrumentListDecorator extends Vue {
   appendElement(newName: string, askForName: boolean) {
     if (askForName)
       newName = prompt("Please enter the name for the new instrument:")!;
+    console.log(newName);
     if (newName != null) {
       if (newName == "") {
         newName = "instrument";

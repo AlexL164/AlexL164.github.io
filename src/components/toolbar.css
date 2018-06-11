@@ -70,6 +70,7 @@ body {
 }
 
 .instrItems {
+  border: none;
 }
 
 .instrItems.dragged {
