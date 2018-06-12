@@ -1,10 +1,10 @@
 <template>
 	<div class="container-fleks-NavAndContent" id="app">
-		<TopBar/>
+		<top-bar></top-bar>
 		<div class="container-fleks-UnderNavContent">
-			  <ToolBarMeasure class="bg-light toolbar" v-if="getState == 0"/>
-			  <ToolBarInstrument class="bg-light toolbar" v-if="getState == 1 | getState == 2"/>
-			  <InstrumentList v-if="getState == 2"/>
+			  <tool-bar-measure class="bg-light toolbar" v-if="getState == 0"/>
+			  <tool-bar-instrument class="bg-light toolbar" v-if="getState == 1 | getState == 2"/>
+			  <instrument-list v-if="getState == 2"/>
    	 		<div id="openSeadragonContainer">  <!--hier openseadragon--> </div>
   		</div>
 	</div>
