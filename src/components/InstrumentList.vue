@@ -8,7 +8,7 @@
   v-bind:data-instrumentid="currentInstrument.id" >{{currentInstrument.instrumentName}}</instrument-list-element>
             </transition-group>
               <a @click="appendElement('',true)" class="btn btn-outline-secondary btn-sm text-secondary toolButton">+</a>
-          <pre>
+          <pre style="flex:1">
           {{this.dragSrcElId}}
   {{instruments}}
         </pre>

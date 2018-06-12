@@ -16,6 +16,7 @@ body {
   display: flex; /* or inline-flex */
   flex-direction: row;
   flex: 1;
+  min-height: 0;
 }
 
 #openSeadragonContainer {
@@ -35,6 +36,8 @@ body {
 .instrlist {
   width: 260px; /* Set the width of the sidebar - or:max-with */
   padding-left: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .instrIcon {
