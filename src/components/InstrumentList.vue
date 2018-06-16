@@ -4,10 +4,10 @@
         <instrument-list-element 
         v-for="(currentInstrument,index) in instruments" :key="currentInstrument.id" 
         :indexx = "index" :instrLength="instruments.length" 
-        @draggedElementChanged="draggedElementChanged" @dragOver="dragOver" @deletePressed="deleteInstrumentAtIndex"
+        @draggedElementChanged="draggedElementChanged" @dragOver="dragOver" @deletePressed="pressedDelete(index)"
   v-bind:data-instrumentid="currentInstrument.id" >{{currentInstrument.instrumentName}}</instrument-list-element>
             </transition-group>
-              <a @click="appendElement('',true)" class="btn btn-outline-secondary btn-sm text-secondary toolButton">+</a>
+              <a @click="append" class="btn btn-outline-secondary btn-sm text-secondary toolButton">+</a>
           <pre style="flex:1">
           {{this.dragSrcElId}}
   {{instruments}}
@@ -16,15 +16,6 @@
 </template>
 
 <script lang="ts">
-/* TODO
-    - visulize dragged isntrument
-    - clarify ids: type checking (numerical), ..
-    - prevent external dropping
-    - crash/error on dragging selected text in li element
-    - include working color management
-    - save instrumentlist
-    - better septeration of list and items (crash if drag before set/start?)
-    */
 
 import { Vue, Component, Prop } from "vue-property-decorator";
 import instrumentListElement from "./instrumentListElement.vue";
@@ -36,19 +27,56 @@ export default class InstrumentListDecorator extends Vue {
   dragSrcElId: string = "";
   dragOverOperationRunning: boolean = false;
 
-  // instruments isn't directly manipulatable because on mobile devices so the manipulation have
-  // there exist no "touchenter" (which could fire with the correct instrument-array object element)
-  instruments = [
+    instruments = [
     { id: 1, instrumentName: "floot" },
     { id: 2, instrumentName: "honk" },
     { id: 3, instrumentName: "toot toot" },
     { id: 4, instrumentName: "elektronischer nasenflöter" }
   ];
 
+  // instruments isn't directly manipulatable because on mobile devices so the manipulation have
+  // there exist no "touchenter" (which could fire with the correct instrument-array object element)
+
   mounted() {}
 
-  addElement(position: number, el: any) {
+  emitContentUpdated(){
+    this.$emit("contentUpdated", this.instruments);
+  }
+
+  pressedDelete(i:number)
+  {
+    this.deleteInstrument(i,false);
+    this.emitContentUpdated();
+  }
+
+  append()
+  {
+    this.appendElement('',true);
+    this.emitContentUpdated();
+  }
+
+  draggedElementChanged(elId: string) {
+    this.dragSrcElId = elId;
+  }
+
+  dragOver(overEl: HTMLElement) {
+    if (!this.dragOverOperationRunning && ! overEl.classList.contains("flip-list-move")) {
+      this.dragOverOperationRunning = true;
+      let idSrc:string = this.dragSrcElId;
+      let idDst:string = overEl.dataset.instrumentid!;
+      if (idSrc != idDst) {
+      this.swapInstrumentsById(idSrc, idDst);
+      } else {
+      }
+      this.dragOverOperationRunning = false;
+    }
+    this.emitContentUpdated();
+  }
+
+  addElement(position: number, el: any, notifyParent:boolean) {
     this.instruments.splice(position, 0, el);
+    if(notifyParent)
+      this.emitContentUpdated();
   }
 
   // one larger then the current largest. nothing more needed yet, because the id is for internal communication only
@@ -68,51 +96,37 @@ export default class InstrumentListDecorator extends Vue {
       let newId = largestId + 1;
       this.instruments.push({ id: newId, instrumentName: newName });
     }
+    this.emitContentUpdated();
   }
 
-  deleteInstrumentAtIndex(index: number) {
+  deleteInstrument(index: number, notifyParent: boolean) {
     this.instruments.splice(index, 1);
-  }
-
-  draggedElementChanged(elId: string) {
-    this.dragSrcElId = elId;
-  }
-
-  dragOver(overEl: HTMLElement) {
-    if (!this.dragOverOperationRunning && ! overEl.classList.contains("flip-list-move")) {
-      this.dragOverOperationRunning = true;
-      let idSrc:string = this.dragSrcElId;
-      let idDst:string = overEl.dataset.instrumentid!;
-
-      if (idSrc != idDst) {
-        let indexSrc:number = this.idToIndex(idSrc);
-        let indexDst:number = this.idToIndex(idDst);
-        this.switchTwoInstrumentsByIndex(indexSrc, indexDst);
-      } else {
-      }
-      this.dragOverOperationRunning = false;
-    }
+    if(notifyParent)
+      this.emitContentUpdated();
   }
 
   // ugly, redundant and not checking if numbers equal
-  switchTwoInstrumentsByIndex(index1: number, index2: number) {
-    var lowerIndex = index1 < index2 ? index1 : index2;
-    var higherIndex = index1 > index2 ? index1 : index2;
+  swapInstrumentsById(idSrc: string, idDst: string) {
+    let indexSrc:number = this.idToIndex(idSrc);
+    let indexDst:number = this.idToIndex(idDst);
+    var lowerIndex = indexSrc < indexDst ? indexSrc : indexDst;
+    var higherIndex = indexSrc > indexDst ? indexSrc : indexDst;
 
     var tempEl1 = this.instruments[lowerIndex];
     var tempEl2 = this.instruments[higherIndex];
     if (lowerIndex < higherIndex) {
-      this.deleteInstrumentAtIndex(lowerIndex);
-      this.deleteInstrumentAtIndex(higherIndex - 1);
-      this.addElement(lowerIndex, tempEl2);
-      this.addElement(higherIndex, tempEl1);
+      this.deleteInstrument(lowerIndex,false);
+      this.deleteInstrument(higherIndex - 1,false);
+      this.addElement(lowerIndex, tempEl2, false);
+      this.addElement(higherIndex, tempEl1, false);
     } else {
     }
+    this.emitContentUpdated();
   }
 
   idToIndex(id: any) {
     let calcedIndex = -1;
-    this.instruments.forEach(function(element,index) {
+    this.instruments.forEach(function(element:any,index:any) {
       if(element.id == id) 
         calcedIndex = index
     });
