@@ -17,11 +17,17 @@ export default class DataInstrumentList {
     this._names.push(name);
   }
 
-  deleteInstrument(index: number) {
+  deleteInstrumentByIndex(index: number) {
     this._ids.splice(index, 1);
     this._names.splice(index, 1);
   }
 
+  deleteInstrumentById(id: String) {
+    this._ids.splice(this.idToIndex(id), 1);
+    this._names.splice(this.idToIndex(id), 1);
+  }
+
+  // ids[] and names[] to {id,name}[]
   getInstrumentsAsArrayOfObjects() {
     let togetherArr:Object[] = new Array();
     let ids = this.getIds();
@@ -41,6 +47,11 @@ export default class DataInstrumentList {
     return this._names;
   }
 
+  getLength()
+  {
+    return this._ids.length;
+  }
+
   // ugly, redundant and not checking if numbers equal
   swapInstrumentsById(idSrc: string, idDst: string) {
     let indexSrc: number = this.idToIndex(idSrc);
@@ -54,8 +65,8 @@ export default class DataInstrumentList {
     var tempName2 = this.getNames()[lowerIndex];
     
     if (lowerIndex < higherIndex) {
-      this.deleteInstrument(lowerIndex);
-      this.deleteInstrument(higherIndex -1);
+      this.deleteInstrumentByIndex(lowerIndex);
+      this.deleteInstrumentByIndex(higherIndex -1);
       this.addInstrument(lowerIndex, tempId1, tempName1);
       this.addInstrument(higherIndex, tempId2, tempName2);
     } else {

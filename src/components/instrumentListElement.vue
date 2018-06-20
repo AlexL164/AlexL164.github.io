@@ -1,14 +1,13 @@
 <template>
-<li @dragover.stop="handleDragOver" @dragleave="handleDragLeave" @touchleave="handleTouchLeave" @dragenter="handleDragEnter" 
+<li @dragover.stop="handleDragOver" @touchleave="handleTouchLeave"
   class="instrItems list-group-item bg-light">
     <span class="instrIcon instrDragIcon"
-  @dragstart="handleDragStart" @dragend="handleDragEnd" @touchstart="handleTouchStart" @touchend="handleTouchEnd" @touchmove="handleTouchMove" draggable="true" >
+  @dragstart="handleDragStart" @touchstart="handleTouchStart" @touchend="handleTouchEnd" @touchmove="handleTouchMove" draggable="true" >
       <i class="fas fa-bars"></i>
     </span>
-  <i v-bind:style="{ color: makeTechnicolor(indexx)}" class="fas fa-circle"></i>
-   <input type="color" id="head" name="color" value="#e66465" />
-    <span contentEditable=true v-on:focusout="save"><!-- @focusout="save" @click="makeEditable"-->{{this.value}}</span>
-    <span class="instrIcon instrTrashIcon" @click="$emit('deletePressed',indexx)">
+  <i v-bind:style="{ color: styleCode}" class="fas fa-circle"></i>
+    <span contentEditable=true v-on:focusout="save">{{this.value}}</span>
+    <span class="instrIcon instrTrashIcon" @click="$emit('deletePressed')">
       <i class="fas fa-trash-alt"></i>
     </span>
     </li>
@@ -19,37 +18,36 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class instrumentListElement extends Vue {
-  @Prop() indexx!: number;
-  @Prop() instrLength!: number;
+  @Prop() styleCode!: String;
   @Prop() value!: String;
 
   handleDragStart(e: DragEvent) {
-    let candidateForSourceListItem = (<Node>e.currentTarget).parentNode;
+    // check if dragIcon was the source
+    this.changeDragElement(<HTMLElement>e.currentTarget);
+    // for visualisation only
+    e.dataTransfer.setData("text/html", "");
+  }
+
+  changeDragElement(iconElement: HTMLElement) {
+    let candidateForSourceListItem = (<Node>iconElement).parentNode;
     if (
       candidateForSourceListItem != null &&
-      (<HTMLElement>e.currentTarget).classList.contains("instrDragIcon")
+      iconElement.classList.contains("instrDragIcon")
     ) {
+      // tell the parent the id from the dataset
       this.$emit(
         "draggedElementChanged",
         <string>(<HTMLElement>candidateForSourceListItem).dataset.instrumentid
       );
-      e.dataTransfer.setData("text/html", "");
     }
   }
 
   handleDragOver(e: DragEvent) {
     if (e.preventDefault) {
-      e.preventDefault(); // Necessary. Allows us to drop.
+      e.preventDefault(); // allows us to drop
     }
     this.$emit("dragOver", <HTMLElement>e.currentTarget);
     return false;
-  }
-
-  handleDragEnter(e: DragEvent) {
-    // this / e.target is the current hover target.
-  }
-
-  handleDragLeave(e: DragEvent) {
   }
 
   handleDrop(e: DragEvent) {
@@ -59,22 +57,10 @@ export default class instrumentListElement extends Vue {
     return false;
   }
 
-  handleDragEnd(e: DragEvent) {
-  }
-
   handleTouchStart(e1: Event) {
     e1.preventDefault();
     let e = <TouchEvent>e1;
-    let candidateForSourceListItem = (<Node>e.currentTarget).parentNode;
-    if (
-      candidateForSourceListItem != null &&
-      (<HTMLElement>e.currentTarget).classList.contains("instrDragIcon")
-    ) {
-      this.$emit(
-        "draggedElementChanged",
-        <string>(<HTMLElement>candidateForSourceListItem).dataset.instrumentid
-      );
-    }
+    this.changeDragElement(<HTMLElement>e.currentTarget);
   }
 
   handleTouchEnd(e1: Event) {
@@ -96,18 +82,14 @@ export default class instrumentListElement extends Vue {
       e.touches[0].clientY
     );
     if (currentTar != null) {
-      console.log(currentTar);
       if (currentTar.classList.contains("instrItems")) {
         this.$emit("dragOver", currentTar);
-      } else {
       }
-    } else {
     }
   }
 
-  save(e: Event)
-  {
-    this.$emit('focusout', (<HTMLElement>e.target).textContent);
+  save(e: Event) {
+    this.$emit("focusout", (<HTMLElement>e.target).textContent);
   }
 
   makeEditable(e: Event) {
@@ -117,15 +99,30 @@ export default class instrumentListElement extends Vue {
   makeUneditable(e: Event) {
     (<HTMLElement>e.target).contentEditable = "false";
   }
-
-  // works and I don't know why
-  // (vue seems not to rerender icon?)
-  makeTechnicolor(n: number) {
-    var nElements = this.instrLength;
-    var colorDistance = 255.0 / nElements;
-    var styleCode = "hsl(" + colorDistance * n + ", 100%, 81%)";
-    return styleCode;
-    // return "yellow";
-  }
 }
 </script>
+
+<style scoped>
+.instrItems {
+  border: none;
+}
+
+.instrItems.dragged {
+  /* -border: 2px dashed #000; */
+  border: 2px dashed blue;
+  opacity: 0.4;
+}
+.instrIcon {
+  padding-right: 5px;
+}
+
+.instrTrashIcon {
+  position: absolute;
+  right: 5px;
+  cursor: pointer;
+}
+
+.instrDragIcon {
+  cursor: move;
+}
+</style>
