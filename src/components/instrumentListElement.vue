@@ -6,7 +6,8 @@
       <i class="fas fa-bars"></i>
     </span>
   <i v-bind:style="{ color: makeTechnicolor(indexx)}" class="fas fa-circle"></i>
-    <span contentEditable=true> <!-- @click="makeEditable" @focusout="makeUneditable"--><slot/></span>
+   <input type="color" id="head" name="color" value="#e66465" />
+    <span contentEditable=true v-on:focusout="save"><!-- @focusout="save" @click="makeEditable"-->{{this.value}}</span>
     <span class="instrIcon instrTrashIcon" @click="$emit('deletePressed',indexx)">
       <i class="fas fa-trash-alt"></i>
     </span>
@@ -20,6 +21,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 export default class instrumentListElement extends Vue {
   @Prop() indexx!: number;
   @Prop() instrLength!: number;
+  @Prop() value!: String;
 
   handleDragStart(e: DragEvent) {
     let candidateForSourceListItem = (<Node>e.currentTarget).parentNode;
@@ -101,6 +103,11 @@ export default class instrumentListElement extends Vue {
       }
     } else {
     }
+  }
+
+  save(e: Event)
+  {
+    this.$emit('focusout', (<HTMLElement>e.target).textContent);
   }
 
   makeEditable(e: Event) {

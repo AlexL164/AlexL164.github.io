@@ -1,9 +1,14 @@
-export default class dataHelper {
-    greeting: string;
-    constructor(message: string) {
-        this.greeting = message;
+import DataInstrumentList from "./DataInstrumentList";
+
+export default class DataHelper {
+    _instrumentList: DataInstrumentList;
+
+    constructor() {
+        this._instrumentList = new DataInstrumentList();
     }
-    greet() {
-        return "Hello, " + this.greeting;
+
+    get instrumentList()
+    {
+        return this._instrumentList;
     }
 }

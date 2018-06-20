@@ -4,11 +4,12 @@
 		<div class="container-fleks-UnderNavContent">
 			  <tool-bar-measure class="bg-light toolbar" v-if="this.getState() == 0"/>
 			  <tool-bar-instrument class="bg-light toolbar" v-if="this.getState() == 1 | this.getState() == 2"/>
-			  <instrument-list 
+			  <instrument-list :instrumentList="this.dataHelper1._instrumentList" :obj="this.dataHelper1"
         @append="appendElement('',true)" @contentUpdated="contentUpdtd"
         v-if="this.getState() == 2"/>
    	 		<div id="openSeadragonContainer">  <!--hier openseadragon--> </div>
   		</div>
+      {{ this.dataHelper1.testString}}
 	</div>
 </template>
 
@@ -18,11 +19,10 @@ import ToolBarMeasure from "./ToolBarMeasure.vue";
 import ToolBarInstrument from "./ToolBarInstrument.vue";
 import InstrumentList from "./InstrumentList.vue";
 import store from "./store/";
-import dataHelper from "./dataHelper";
+import DataHelper from "./DataHelper";
 import { Vue, Component} from "vue-property-decorator";
 
-let greeter = new dataHelper("world");
-alert(greeter.greet());
+let dataHelper = new DataHelper();
 
 Vue.component("top-bar", TopBar);
 Vue.component("tool-bar-measure", ToolBarMeasure);
@@ -31,7 +31,8 @@ Vue.component("instrument-list", InstrumentList);
 
 @Component
 export default class App extends Vue {
-  greeter:any;
+  
+  dataHelper1:any = dataHelper;
 
 /* TODO
     - visulize dragged isntrument
@@ -41,15 +42,14 @@ export default class App extends Vue {
     - include working color management
     - better septeration of list and items (crash if drag before set/start?)
     - comment
+    - save instrument list, data-idea see below
     */
 
   getState() {
     return store.state.count;
   }
 
-  // data idea= dataHelper-property as comp-startvalue via this.localdata=property, emit contentchange, change datahelper-property
-  // that way, we dont mutate a prop (which would work, as it is an array, butits not nice) 
-  // but we can still leave the list processing in the listcomponent
+  // array is passed as reference, so dataHelper's instruments are always up to date
 
   contentUpdtd(content:any)
   {
